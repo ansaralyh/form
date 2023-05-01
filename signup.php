@@ -1,22 +1,27 @@
 <?php
-   $showAlert = false;
+$showAlert = false;
+$showError = false;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-   
     include 'partials/db_connection.php';
     $username = $_POST["username"];
     $password = $_POST["password"];
     $cpassword = $_POST["cpassword"];
     $exists = false;
+
     if (($password == $cpassword) && $exists == false) {
-        $sql = "INSERT INTO `user` (`username`, `password`, `dt`) VALUES ( '$username', '$password', current_timestamp())";
+        $sql = "INSERT INTO `user` (`username`, `password`, `dt`) VALUES ('$username', '$password', current_timestamp())";
         $result = mysqli_query($conn, $sql);
-     
+
         if ($result) {
             $showAlert = true;
+        } else {
+            $showError = "Error: " . mysqli_error($conn);
         }
+    } else {
+        $showError = "Passwords do not match";
     }
 }
-
 ?>
 
 <!doctype html>
@@ -39,31 +44,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>';
     }
+    if ($showError !== false) {
+        echo ' <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Error!</strong> ' . $showError . '
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>';
+    }
     ?>
     <h1 class="text-center">Welcome to sign up...!</h1>
     <div class="container" class="col-md-6 mx-auto" style="max-width: 500px;">
-        <form action="/form/sgnup.php" method="POST">
+        <form action="/form/signup.php" method="POST">
             <div class="mb-3">
-                <label for="username" class="form-label">User name</label>
-                <input type="text" class="form-control" id="username" aria-describedby="emailHelp">
-
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password">
+                <input type="password" class="form-control" id="password" name="password">
             </div>
             <div class="mb-3">
-                <label for="cpassword" class="form-label">confirm password</label>
-                <input type="password" class="form-control" id="cpassword">
+                <label for="cpassword" class="form-label">
+
+            <div class="mb-3">
+                <label for="cpassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="cpassword" name="cpassword">
             </div>
 
             <button type="submit" class="btn btn-primary">Sign up</button>
         </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-</body>
-
-</html>
-
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U
